@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AnimeForge AI</title>
 
 <style>
@@ -15,83 +15,157 @@
 body{
   min-height:100vh;
   font-family:Arial,sans-serif;
-  color:#fff;
-  background:
-    radial-gradient(circle at 20% 10%,#5420a855,transparent 35%),
-    radial-gradient(circle at 80% 80%,#00c8ff33,transparent 35%),
-    #05050b;
+  color:white;
+  background:#03030a;
 }
 
+/* LOADING SCREEN */
+#loader{
+  position:fixed;
+  inset:0;
+  z-index:9999;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  background:
+    radial-gradient(circle,#321052 0%,#090711 40%,#020207 100%);
+  transition:1s;
+}
+
+#loader.hide{
+  opacity:0;
+  visibility:hidden;
+}
+
+.loaderLogo{
+  font-size:35px;
+  font-weight:900;
+  letter-spacing:2px;
+}
+
+.loaderLogo span{
+  color:#a855f7;
+}
+
+.ring{
+  width:65px;
+  height:65px;
+  margin-top:30px;
+  border:3px solid #ffffff18;
+  border-top-color:#a855f7;
+  border-right-color:#00d9ff;
+  border-radius:50%;
+  animation:spin 1s linear infinite;
+  box-shadow:0 0 35px #9d5cff55;
+}
+
+.loadingText{
+  margin-top:25px;
+  font-size:11px;
+  letter-spacing:4px;
+  color:#aaa;
+  animation:pulse 1s infinite;
+}
+
+.loadingBar{
+  width:190px;
+  height:3px;
+  margin-top:18px;
+  background:#ffffff15;
+  overflow:hidden;
+  border-radius:10px;
+}
+
+.loadingBar div{
+  height:100%;
+  width:0;
+  background:linear-gradient(90deg,#a855f7,#00d9ff);
+  animation:load 3s forwards;
+}
+
+@keyframes spin{
+  to{transform:rotate(360deg)}
+}
+
+@keyframes pulse{
+  50%{opacity:.3}
+}
+
+@keyframes load{
+  to{width:100%}
+}
+
+/* HEADER */
 header{
-  padding:22px;
+  padding:20px;
   text-align:center;
   border-bottom:1px solid #ffffff12;
-  background:#080812cc;
+  background:#080812dd;
   backdrop-filter:blur(15px);
 }
 
 .logo{
-  font-size:25px;
-  font-weight:800;
-  letter-spacing:1px;
+  font-size:24px;
+  font-weight:900;
 }
 
 .logo span{
-  color:#9d5cff;
+  color:#a855f7;
 }
 
+/* HERO */
 .hero{
   text-align:center;
-  padding:55px 20px 30px;
+  padding:60px 20px 30px;
 }
 
 .hero h1{
-  font-size:clamp(35px,9vw,70px);
+  font-size:clamp(38px,9vw,70px);
   line-height:1;
-  background:linear-gradient(90deg,#fff,#b477ff,#55ddff);
+  background:linear-gradient(90deg,#fff,#a855f7,#00d9ff);
   -webkit-background-clip:text;
   color:transparent;
 }
 
 .hero p{
-  margin-top:18px;
-  color:#a9a9b8;
-  font-size:15px;
+  margin-top:20px;
+  color:#9999aa;
 }
 
-.box{
+/* GENERATOR */
+.generator{
   width:min(900px,92%);
   margin:30px auto;
-  padding:22px;
-  border:1px solid #ffffff18;
-  border-radius:22px;
-  background:#0c0c15cc;
-  box-shadow:0 0 50px #721cff18;
+  padding:25px;
+  border-radius:24px;
+  border:1px solid #ffffff15;
+  background:#0b0b14dd;
+  box-shadow:0 0 60px #7c3aed18;
 }
 
 label{
   display:block;
   margin-bottom:10px;
-  color:#ccc;
+  color:#ddd;
   font-weight:bold;
 }
 
 textarea{
   width:100%;
-  height:150px;
+  height:160px;
   resize:none;
-  border:1px solid #ffffff15;
-  outline:none;
+  padding:17px;
   border-radius:15px;
-  padding:16px;
-  background:#05050b;
+  outline:none;
+  border:1px solid #ffffff15;
+  background:#05050a;
   color:white;
   font-size:15px;
 }
 
 textarea:focus{
-  border-color:#9d5cff;
-  box-shadow:0 0 20px #9d5cff22;
+  border-color:#a855f7;
 }
 
 .options{
@@ -105,81 +179,77 @@ select{
   width:100%;
   padding:13px;
   border-radius:12px;
-  border:1px solid #ffffff18;
-  background:#080811;
+  border:1px solid #ffffff15;
+  background:#05050a;
   color:white;
 }
 
-button{
+.generate{
   width:100%;
-  margin-top:20px;
-  padding:16px;
+  margin-top:22px;
+  padding:17px;
   border:0;
   border-radius:14px;
   color:white;
-  font-size:16px;
   font-weight:bold;
+  font-size:16px;
   cursor:pointer;
-  background:linear-gradient(90deg,#7b35ff,#00bfff);
-  box-shadow:0 0 25px #7b35ff44;
+  background:linear-gradient(90deg,#7c3aed,#06b6d4);
+  box-shadow:0 0 30px #7c3aed44;
 }
 
-button:active{
+.generate:active{
   transform:scale(.98);
 }
 
-.status{
+/* STATUS */
+#status{
   display:none;
   text-align:center;
   margin-top:25px;
-  padding:22px;
-  border-radius:15px;
+  padding:25px;
+  border-radius:18px;
   background:#11111c;
 }
 
-.loader{
-  width:35px;
-  height:35px;
+.smallRing{
+  width:38px;
+  height:38px;
   margin:auto;
-  border:4px solid #ffffff18;
-  border-top-color:#9d5cff;
+  border:3px solid #ffffff15;
+  border-top-color:#a855f7;
   border-radius:50%;
   animation:spin 1s linear infinite;
 }
 
-@keyframes spin{
-  to{transform:rotate(360deg)}
+#statusText{
+  margin-top:15px;
+  color:#bbb;
 }
 
-.result{
+/* RESULT */
+#result{
   display:none;
   margin-top:25px;
-  text-align:center;
 }
 
 .preview{
-  height:230px;
+  height:260px;
   display:flex;
   align-items:center;
   justify-content:center;
+  text-align:center;
   border-radius:18px;
+  border:1px solid #ffffff15;
   background:
-    linear-gradient(135deg,#211044,#071e2b);
-  border:1px solid #ffffff18;
+    linear-gradient(135deg,#241044,#062331);
   color:#77778a;
-}
-
-.note{
-  margin-top:15px;
-  color:#77778a;
-  font-size:12px;
-  line-height:1.6;
 }
 
 footer{
   text-align:center;
-  padding:35px 20px;
-  color:#666676;
+  padding:40px 20px;
+  color:#666;
   font-size:12px;
 }
 
@@ -187,48 +257,71 @@ footer{
   .options{
     grid-template-columns:1fr;
   }
-
-  .hero{
-    padding-top:40px;
-  }
 }
 </style>
 </head>
 
 <body>
 
+<!-- LOADING -->
+<div id="loader">
+  <div class="loaderLogo">
+    Anime<span>Forge</span>
+  </div>
+
+  <div class="ring"></div>
+
+  <div class="loadingText">
+    INITIALIZING AI
+  </div>
+
+  <div class="loadingBar">
+    <div></div>
+  </div>
+</div>
+
 <header>
-  <div class="logo">Anime<span>Forge</span> AI</div>
+  <div class="logo">
+    Anime<span>Forge</span> AI
+  </div>
 </header>
 
 <section class="hero">
-  <h1>Turn Your Ideas<br>Into Anime</h1>
-  <p>Describe your story and create cinematic anime scenes with AI.</p>
+  <h1>
+    Turn Ideas<br>
+    Into Anime
+  </h1>
+
+  <p>
+    Create cinematic anime stories from your imagination.
+  </p>
 </section>
 
-<div class="box">
+<div class="generator">
 
-  <label>🎬 Your Anime Prompt</label>
+  <label>🎬 Describe Your Anime</label>
 
   <textarea id="prompt"
-  placeholder="Example: A teenage boy walks through a beautiful Japanese town during heavy rain. Cherry blossom petals fly through the air. Cinematic anime movie style..."></textarea>
+  placeholder="Example: A young boy walks through a Japanese city during heavy rain. Cherry blossom petals fly through the air. Cinematic anime movie style..."></textarea>
 
   <div class="options">
 
     <div>
       <label>🎨 Style</label>
+
       <select id="style">
         <option>Cinematic Anime</option>
         <option>Fantasy Anime</option>
-        <option>Romance Anime</option>
         <option>Action Anime</option>
-        <option>Studio Anime</option>
+        <option>Romance Anime</option>
+        <option>Dark Anime</option>
       </select>
     </div>
 
     <div>
-      <label>📺 Aspect</label>
-      <select id="aspect">
+      <label>📺 Format</label>
+
+      <select id="format">
         <option>16:9 Cinematic</option>
         <option>9:16 Vertical</option>
         <option>1:1 Square</option>
@@ -237,6 +330,7 @@ footer{
 
     <div>
       <label>⏱️ Duration</label>
+
       <select id="duration">
         <option>5 Seconds</option>
         <option>10 Seconds</option>
@@ -247,73 +341,101 @@ footer{
 
   </div>
 
-  <button onclick="generateAnime()">
+  <button class="generate" onclick="generateAnime()">
     ✨ GENERATE ANIME
   </button>
 
-  <div class="status" id="status">
-    <div class="loader"></div>
-    <p style="margin-top:15px" id="statusText">
-      AI is preparing your anime...
-    </p>
-  </div>
+  <div id="status">
 
-  <div class="result" id="result">
-    <div class="preview">
-      🎬 AI VIDEO WILL APPEAR HERE
+    <div class="smallRing"></div>
+
+    <div id="statusText">
+      Understanding your story...
     </div>
 
-    <p class="note">
-      This V1 page is the generator interface.
-      The actual AI video-generation API will be connected next.
-    </p>
+  </div>
+
+  <div id="result">
+
+    <div class="preview">
+      🎬<br>
+      AI VIDEO WILL APPEAR HERE
+    </div>
+
   </div>
 
 </div>
 
 <footer>
-  AnimeForge AI • Create stories. Create worlds.
+  AnimeForge AI • Imagine. Create. Animate.
 </footer>
 
 <script>
 
+window.addEventListener("load",function(){
+
+  setTimeout(function(){
+
+    document
+      .getElementById("loader")
+      .classList.add("hide");
+
+  },3200);
+
+});
+
+
 function generateAnime(){
 
-  const prompt=document.getElementById("prompt").value.trim();
+  const prompt =
+    document.getElementById("prompt").value.trim();
 
   if(!prompt){
-    alert("Please enter your anime prompt first.");
+
+    alert("Please describe your anime first.");
+
     return;
   }
 
-  const status=document.getElementById("status");
-  const result=document.getElementById("result");
-  const text=document.getElementById("statusText");
+  const status =
+    document.getElementById("status");
+
+  const result =
+    document.getElementById("result");
+
+  const statusText =
+    document.getElementById("statusText");
 
   result.style.display="none";
   status.style.display="block";
 
   const messages=[
+
     "Understanding your story...",
-    "Designing anime characters...",
-    "Building the cinematic scene...",
-    "Preparing animation...",
-    "Almost ready..."
+
+    "Creating anime characters...",
+
+    "Designing the environment...",
+
+    "Building cinematic scenes...",
+
+    "Preparing AI animation..."
+
   ];
 
   let i=0;
 
-  const interval=setInterval(()=>{
+  const timer=setInterval(function(){
 
-    text.textContent=messages[i];
+    statusText.textContent=messages[i];
 
     i++;
 
     if(i>=messages.length){
 
-      clearInterval(interval);
+      clearInterval(timer);
 
-      setTimeout(()=>{
+      setTimeout(function(){
 
         status.style.display="none";
         result.style.display="block";
@@ -329,4 +451,4 @@ function generateAnime(){
 </script>
 
 </body>
-  </html>
+</html>
