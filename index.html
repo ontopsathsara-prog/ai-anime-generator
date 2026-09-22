@@ -385,15 +385,14 @@ window.addEventListener("load",function(){
 });
 
 
-function generateAnime(){
+
+async function generateAnime(){
 
   const prompt =
     document.getElementById("prompt").value.trim();
 
   if(!prompt){
-
     alert("Please describe your anime first.");
-
     return;
   }
 
@@ -406,46 +405,30 @@ function generateAnime(){
   const statusText =
     document.getElementById("statusText");
 
-  result.style.display="none";
-  status.style.display="block";
+  result.style.display = "none";
+  status.style.display = "block";
 
-  const messages=[
+  statusText.textContent = "Connecting to AI...";
 
-    "Understanding your story...",
+  try{
 
-    "Creating anime characters...",
+    const data = await connectAI(prompt);
 
-    "Designing the environment...",
+    status.style.display = "none";
+    result.style.display = "block";
 
-    "Building cinematic scenes...",
+    document.querySelector(".preview").innerHTML =
+      "<h3>AI Connected ✓</h3>" +
+      "<p>" + data.prompt + "</p>";
 
-    "Preparing AI animation..."
+  }catch(error){
 
-  ];
+    status.style.display = "none";
 
-  let i=0;
+    alert(error.message);
 
-  const timer=setInterval(function(){
-
-    statusText.textContent=messages[i];
-
-    i++;
-
-    if(i>=messages.length){
-
-      clearInterval(timer);
-
-      setTimeout(function(){
-
-        status.style.display="none";
-        result.style.display="block";
-
-      },800);
-
-    }
-
-  },900);
-
+  }
+}
 }
 async function connectAI(prompt){
 
