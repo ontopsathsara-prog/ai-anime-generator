@@ -1,439 +1,287 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AnimeForge AI</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<style>
-*{
-  box-sizing:border-box;
-  margin:0;
-  padding:0;
-}
+  <title>AnimeForge AI</title>
 
-body{
-  min-height:100vh;
-  font-family:Arial,sans-serif;
-  color:white;
-  background:#03030a;
-}
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
-/* LOADING SCREEN */
-#loader{
-  position:fixed;
-  inset:0;
-  z-index:9999;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  background:
-    radial-gradient(circle,#321052 0%,#090711 40%,#020207 100%);
-  transition:1s;
-}
+    body {
+      min-height: 100vh;
+      font-family: Arial, sans-serif;
+      color: white;
+      background:
+        radial-gradient(circle at top, #321052 0%, #090711 45%, #020207 100%);
+      overflow-x: hidden;
+    }
 
-#loader.hide{
-  opacity:0;
-  visibility:hidden;
-}
+    .container {
+      width: 100%;
+      max-width: 900px;
+      margin: auto;
+      padding: 25px 18px 50px;
+    }
 
-.loaderLogo{
-  font-size:35px;
-  font-weight:900;
-  letter-spacing:2px;
-}
+    .header {
+      text-align: center;
+      padding: 35px 10px 25px;
+    }
 
-.loaderLogo span{
-  color:#a855f7;
-}
+    .logo {
+      font-size: 34px;
+      font-weight: 800;
+      letter-spacing: 2px;
+    }
 
-.ring{
-  width:65px;
-  height:65px;
-  margin-top:30px;
-  border:3px solid #ffffff18;
-  border-top-color:#a855f7;
-  border-right-color:#00d9ff;
-  border-radius:50%;
-  animation:spin 1s linear infinite;
-  box-shadow:0 0 35px #9d5cff55;
-}
+    .logo span {
+      color: #a855f7;
+    }
 
-.loadingText{
-  margin-top:25px;
-  font-size:11px;
-  letter-spacing:4px;
-  color:#aaa;
-  animation:pulse 1s infinite;
-}
+    .subtitle {
+      margin-top: 10px;
+      color: #aaa;
+      font-size: 14px;
+    }
 
-.loadingBar{
-  width:190px;
-  height:3px;
-  margin-top:18px;
-  background:#ffffff15;
-  overflow:hidden;
-  border-radius:10px;
-}
+    .card {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 22px;
+      padding: 22px;
+      backdrop-filter: blur(15px);
+      box-shadow: 0 15px 50px rgba(0,0,0,0.35);
+    }
 
-.loadingBar div{
-  height:100%;
-  width:0;
-  background:linear-gradient(90deg,#a855f7,#00d9ff);
-  animation:load 3s forwards;
-}
+    label {
+      display: block;
+      margin-bottom: 10px;
+      font-size: 14px;
+      color: #ddd;
+    }
 
-@keyframes spin{
-  to{transform:rotate(360deg)}
-}
+    textarea {
+      width: 100%;
+      min-height: 160px;
+      resize: vertical;
+      border: none;
+      outline: none;
+      border-radius: 16px;
+      padding: 16px;
+      color: white;
+      background: rgba(0,0,0,0.35);
+      border: 1px solid rgba(255,255,255,0.1);
+      font-size: 15px;
+    }
 
-@keyframes pulse{
-  50%{opacity:.3}
-}
+    textarea::placeholder {
+      color: #777;
+    }
 
-@keyframes load{
-  to{width:100%}
-}
+    textarea:focus {
+      border-color: #a855f7;
+      box-shadow: 0 0 20px rgba(168,85,247,0.2);
+    }
 
-/* HEADER */
-header{
-  padding:20px;
-  text-align:center;
-  border-bottom:1px solid #ffffff12;
-  background:#080812dd;
-  backdrop-filter:blur(15px);
-}
+    .generate-btn {
+      width: 100%;
+      margin-top: 18px;
+      padding: 16px;
+      border: none;
+      border-radius: 14px;
+      color: white;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      background: linear-gradient(90deg, #7c3aed, #a855f7);
+      box-shadow: 0 8px 25px rgba(124,58,237,0.3);
+      transition: 0.2s;
+    }
 
-.logo{
-  font-size:24px;
-  font-weight:900;
-}
+    .generate-btn:hover {
+      transform: translateY(-2px);
+    }
 
-.logo span{
-  color:#a855f7;
-}
+    .generate-btn:active {
+      transform: scale(0.98);
+    }
 
-/* HERO */
-.hero{
-  text-align:center;
-  padding:60px 20px 30px;
-}
+    .status {
+      display: none;
+      margin-top: 18px;
+      padding: 14px;
+      border-radius: 12px;
+      text-align: center;
+      background: rgba(168,85,247,0.1);
+      color: #d8b4fe;
+      font-size: 14px;
+    }
 
-.hero h1{
-  font-size:clamp(38px,9vw,70px);
-  line-height:1;
-  background:linear-gradient(90deg,#fff,#a855f7,#00d9ff);
-  -webkit-background-clip:text;
-  color:transparent;
-}
+    .result {
+      display: none;
+      margin-top: 22px;
+    }
 
-.hero p{
-  margin-top:20px;
-  color:#9999aa;
-}
+    .result h2 {
+      margin-bottom: 12px;
+      font-size: 20px;
+    }
 
-/* GENERATOR */
-.generator{
-  width:min(900px,92%);
-  margin:30px auto;
-  padding:25px;
-  border-radius:24px;
-  border:1px solid #ffffff15;
-  background:#0b0b14dd;
-  box-shadow:0 0 60px #7c3aed18;
-}
+    .result-box {
+      min-height: 180px;
+      padding: 18px;
+      border-radius: 16px;
+      background: rgba(0,0,0,0.3);
+      border: 1px solid rgba(255,255,255,0.1);
+      color: #ddd;
+      line-height: 1.6;
+      white-space: pre-wrap;
+    }
 
-label{
-  display:block;
-  margin-bottom:10px;
-  color:#ddd;
-  font-weight:bold;
-}
+    .footer {
+      text-align: center;
+      margin-top: 35px;
+      color: #666;
+      font-size: 12px;
+    }
 
-textarea{
-  width:100%;
-  height:160px;
-  resize:none;
-  padding:17px;
-  border-radius:15px;
-  outline:none;
-  border:1px solid #ffffff15;
-  background:#05050a;
-  color:white;
-  font-size:15px;
-}
+    @media (max-width: 600px) {
+      .logo {
+        font-size: 28px;
+      }
 
-textarea:focus{
-  border-color:#a855f7;
-}
+      .container {
+        padding: 15px 12px 40px;
+      }
 
-.options{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:12px;
-  margin-top:18px;
-}
-
-select{
-  width:100%;
-  padding:13px;
-  border-radius:12px;
-  border:1px solid #ffffff15;
-  background:#05050a;
-  color:white;
-}
-
-.generate{
-  width:100%;
-  margin-top:22px;
-  padding:17px;
-  border:0;
-  border-radius:14px;
-  color:white;
-  font-weight:bold;
-  font-size:16px;
-  cursor:pointer;
-  background:linear-gradient(90deg,#7c3aed,#06b6d4);
-  box-shadow:0 0 30px #7c3aed44;
-}
-
-.generate:active{
-  transform:scale(.98);
-}
-
-/* STATUS */
-#status{
-  display:none;
-  text-align:center;
-  margin-top:25px;
-  padding:25px;
-  border-radius:18px;
-  background:#11111c;
-}
-
-.smallRing{
-  width:38px;
-  height:38px;
-  margin:auto;
-  border:3px solid #ffffff15;
-  border-top-color:#a855f7;
-  border-radius:50%;
-  animation:spin 1s linear infinite;
-}
-
-#statusText{
-  margin-top:15px;
-  color:#bbb;
-}
-
-/* RESULT */
-#result{
-  display:none;
-  margin-top:25px;
-}
-
-.preview{
-  height:260px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  text-align:center;
-  border-radius:18px;
-  border:1px solid #ffffff15;
-  background:
-    linear-gradient(135deg,#241044,#062331);
-  color:#77778a;
-}
-
-footer{
-  text-align:center;
-  padding:40px 20px;
-  color:#666;
-  font-size:12px;
-}
-
-@media(max-width:650px){
-  .options{
-    grid-template-columns:1fr;
-  }
-}
-</style>
+      .card {
+        padding: 16px;
+      }
+    }
+  </style>
 </head>
 
 <body>
 
-<!-- LOADING -->
-<div id="loader">
-  <div class="loaderLogo">
-    Anime<span>Forge</span>
-  </div>
+  <div class="container">
 
-  <div class="ring"></div>
+    <header class="header">
+      <div class="logo">
+        Anime<span>Forge</span> AI
+      </div>
 
-  <div class="loadingText">
-    INITIALIZING AI
-  </div>
+      <p class="subtitle">
+        Turn your imagination into an anime story
+      </p>
+    </header>
 
-  <div class="loadingBar">
-    <div></div>
-  </div>
-</div>
+    <main class="card">
 
-<header>
-  <div class="logo">
-    Anime<span>Forge</span> AI
-  </div>
-</header>
+      <label for="prompt">
+        Describe your anime idea
+      </label>
 
-<section class="hero">
-  <h1>
-    Turn Ideas<br>
-    Into Anime
-  </h1>
+      <textarea
+        id="prompt"
+        placeholder="Example: A boy meets a mysterious girl during a rainy evening in Tokyo..."
+      ></textarea>
 
-  <p>
-    Create cinematic anime stories from your imagination.
-  </p>
-</section>
+      <button class="generate-btn" onclick="generateAnime()">
+        ✨ Generate Anime
+      </button>
 
-<div class="generator">
+      <div class="status" id="status">
+        Creating your anime...
+      </div>
 
-  <label>🎬 Describe Your Anime</label>
+      <div class="result" id="result">
+        <h2>Generated Result</h2>
 
-  <textarea id="prompt"
-  placeholder="Example: A young boy walks through a Japanese city during heavy rain. Cherry blossom petals fly through the air. Cinematic anime movie style..."></textarea>
+        <div class="result-box" id="resultBox"></div>
+      </div>
 
-  <div class="options">
+    </main>
 
-    <div>
-      <label>🎨 Style</label>
-
-      <select id="style">
-        <option>Cinematic Anime</option>
-        <option>Fantasy Anime</option>
-        <option>Action Anime</option>
-        <option>Romance Anime</option>
-        <option>Dark Anime</option>
-      </select>
-    </div>
-
-    <div>
-      <label>📺 Format</label>
-
-      <select id="format">
-        <option>16:9 Cinematic</option>
-        <option>9:16 Vertical</option>
-        <option>1:1 Square</option>
-      </select>
-    </div>
-
-    <div>
-      <label>⏱️ Duration</label>
-
-      <select id="duration">
-        <option>5 Seconds</option>
-        <option>10 Seconds</option>
-        <option>15 Seconds</option>
-        <option>30 Seconds</option>
-      </select>
+    <div class="footer">
+      AnimeForge AI • Powered by AI
     </div>
 
   </div>
 
-  <button class="generate" onclick="generateAnime()">
-    ✨ GENERATE ANIME
-  </button>
+  <script>
 
-  <div id="status">
+    async function generateAnime() {
 
-    <div class="smallRing"></div>
+      const prompt =
+        document.getElementById("prompt").value.trim();
 
-    <div id="statusText">
-      Understanding your story...
-    </div>
+      const status =
+        document.getElementById("status");
 
-  </div>
+      const result =
+        document.getElementById("result");
 
-  <div id="result">
+      const resultBox =
+        document.getElementById("resultBox");
 
-    <div class="preview">
-      🎬<br>
-      AI VIDEO WILL APPEAR HERE
-    </div>
+      if (!prompt) {
+        alert("Please describe your anime first.");
+        return;
+      }
 
-  </div>
+      status.style.display = "block";
+      result.style.display = "none";
 
-</div>
+      try {
 
-<footer>
-  AnimeForge AI • Imagine. Create. Animate.
-</footer>
+        const response = await fetch("/api/generate", {
+          method: "POST",
 
-<script>
+          headers: {
+            "Content-Type": "application/json"
+          },
 
-window.addEventListener("load",function(){
+          body: JSON.stringify({
+            prompt: prompt
+          })
+        });
 
-  setTimeout(function(){
+        if (!response.ok) {
+          throw new Error("AI connection failed");
+        }
 
-    document
-      .getElementById("loader")
-      .classList.add("hide");
+        const data = await response.json();
 
-  },3200);
+        status.style.display = "none";
+        result.style.display = "block";
 
-});
+        resultBox.textContent =
+          data.result ||
+          data.output ||
+          "Anime generated successfully.";
 
+      } catch (error) {
 
+        status.style.display = "none";
+        result.style.display = "block";
 
-async function generateAnime(){
+        resultBox.textContent =
+          "AI backend is not connected yet.\n\n" +
+          "Your prompt was received:\n\n" +
+          prompt +
+          "\n\nNext, we will connect the AI backend.";
 
-  const prompt =
-    document.getElementById("prompt").value.trim();
+      }
 
-  if(!prompt){
-    alert("Please describe your anime first.");
-    return;
-  }
+    }
 
-  const status =
-    document.getElementById("status");
-
-  const result =
-    document.getElementById("result");
-
-  const statusText =
-    document.getElementById("statusText");
-
-  result.style.display = "none";
-  status.style.display = "block";
-
-  statusText.textContent = "Connecting to AI...";
-
-  try{
-
-    const data = await connectAI(prompt);
-
-    status.style.display = "none";
-    result.style.display = "block";
-
-    document.querySelector(".preview").innerHTML =
-      "<h3>AI Connected ✓</h3>" +
-      "<p>" + data.prompt + "</p>";
-
-  }catch(error){
-
-    status.style.display = "none";
-
-    alert(error.message);
-async function connectAI(prompt){
-
-  return {
-    prompt: prompt
-  };
-
-}
-</script>
+  </script>
 
 </body>
 </html>
